@@ -25,7 +25,9 @@ public class IncidentController {
     // Create a new Incident
     @PostMapping
     public ResponseEntity<Incident> createIncident(@RequestBody Incident incident) {
-        Incident savedIncident = incidentService.createIncident(incident);
+        Incident savedIncident = incidentService.createIncident(
+                incident.getTitle(), incident.getDescription(), incident.getStatus(), incident.getPriority()
+        );
         return new ResponseEntity<>(savedIncident, HttpStatus.CREATED);
     }
 

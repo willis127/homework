@@ -34,9 +34,18 @@ public class Incident implements Serializable {
 
     // 无参构造器
     public Incident() {
-        this.id = counter.getAndIncrement();
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+    }
+    // 工厂方法，用于创建带新 ID 的实例
+    public static Incident createNewIncident(String title, String description, Status status, Priority priority) {
+        Incident incident = new Incident();
+        incident.id = counter.getAndIncrement();
+        incident.title = title;
+        incident.description = description;
+        incident.status = status;
+        incident.priority = priority;
+        return incident;
     }
 
     // 全参构造器
@@ -50,10 +59,12 @@ public class Incident implements Serializable {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Getter 和 Setter 方法（省略setId方法，因为id自动生成）
+
     public Long getId() {
         return id;
     }
+
+    public void setId(Long id) { this.id = id; }
 
     public String getTitle() {
         return title;
@@ -89,6 +100,10 @@ public class Incident implements Serializable {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public LocalDateTime getUpdatedAt() {

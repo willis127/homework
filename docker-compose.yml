@@ -4,7 +4,8 @@ services:
   app:
     build:
       context: ./app
-      dockerfile: Dockerfile
+#      dockerfile: Dockerfile
+      dockerfile: Dockerfile-CICD
     ports:
       - "8080:8080"
     environment:

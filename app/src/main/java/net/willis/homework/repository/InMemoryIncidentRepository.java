@@ -17,7 +17,8 @@ public class InMemoryIncidentRepository {
         incidentMap.clear();
     }
     // Save a new Incident
-    public Incident save(Incident incident) {
+    public Incident save(String title, String description, Incident.Status status, Incident.Priority priority) {
+        Incident incident = Incident.createNewIncident(title, description, status, priority);
         incidentMap.put(incident.getId(), incident);
         return incident;
     }
@@ -39,8 +40,11 @@ public class InMemoryIncidentRepository {
 
     // Update an existing Incident
     public Incident update(Long id, Incident updatedIncident) {
-        if (incidentMap.containsKey(id)) {
+        Incident existingIncident = incidentMap.get(id);
+        if (existingIncident != null) {
             updatedIncident.updateTimestamp();
+            updatedIncident.setId(id); // 保持原 id 不变
+            updatedIncident.setCreatedAt(existingIncident.getCreatedAt()); // 保持原createAt
             incidentMap.put(id, updatedIncident);
             return updatedIncident;
         }

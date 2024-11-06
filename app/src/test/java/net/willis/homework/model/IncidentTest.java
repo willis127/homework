@@ -1,73 +1,85 @@
 package net.willis.homework.model;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.*;
+import java.math.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.time.LocalDateTime;
-
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class IncidentTest {
+class IncidentTest {
 
-    private Incident incident;
+    private List<Incident> incidents;
 
     @BeforeEach
-    public void setUp() {
-        // Initialize an Incident object before each test
-        incident = new Incident("Test Title", "Test Description", Incident.Status.OPEN, Incident.Priority.HIGH);
+    void setUp() {
+        incidents = List.of(
+                Incident.createNewIncident("title1", "description1", Incident.Status.OPEN, Incident.Priority.LOW),
+                Incident.createNewIncident("title2", "description2", Incident.Status.IN_PROGRESS, Incident.Priority.MEDIUM),
+                Incident.createNewIncident("title3", "description3", Incident.Status.CLOSED, Incident.Priority.HIGH)
+        );
     }
 
     @Test
-    public void testIncidentInitialization() {
-        // Test that the Incident is initialized correctly
-        assertEquals("Test Title", incident.getTitle());
-        assertEquals("Test Description", incident.getDescription());
-        assertEquals(Incident.Status.OPEN, incident.getStatus());
-        assertEquals(Incident.Priority.HIGH, incident.getPriority());
-
-        // Test that createdAt and updatedAt are not null and are close to the current time
-        assertNotNull(incident.getCreatedAt());
-        assertNotNull(incident.getUpdatedAt());
-
-        // Allow a margin of error for creation timestamp
-        LocalDateTime now = LocalDateTime.now();
-        assertTrue(incident.getCreatedAt().isBefore(now) || incident.getCreatedAt().isEqual(now));
-    }
-
-    @Test
-    public void testUpdateTimestamp() {
-        // Record the current updatedAt time
-        LocalDateTime originalUpdatedAt = incident.getUpdatedAt();
-
-        // Wait a moment to ensure the timestamp difference
-        try {
-            Thread.sleep(10); // 10 milliseconds
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    void createNewIncident_ShouldCreateIncidentWithUniqueID() {
+        Long previousId = 0L;
+        for (Incident incident : incidents) {
+            Long currentId = incident.getId();
+            assertTrue(currentId > previousId, "ID should be greater than the previous ID");
+            previousId = currentId;
         }
-
-        // Update the timestamp
-        incident.updateTimestamp();
-        LocalDateTime newUpdatedAt = incident.getUpdatedAt();
-
-        // Verify that the updatedAt timestamp has changed
-        assertNotEquals(originalUpdatedAt, newUpdatedAt);
-        assertTrue(newUpdatedAt.isAfter(originalUpdatedAt));
     }
 
     @Test
-    public void testSettersAndGetters() {
-        // Test setters and getters
-        incident.setTitle("Updated Title");
-        assertEquals("Updated Title", incident.getTitle());
+    void createNewIncident_ShouldSetCorrectProperties() {
+        for (Incident incident : incidents) {
+            assertNotNull(incident.getId(), "ID should not be null");
+            assertNotNull(incident.getTitle(), "Title should not be null");
+            assertNotNull(incident.getDescription(), "Description should not be null");
+            assertNotNull(incident.getStatus(), "Status should not be null");
+            assertNotNull(incident.getPriority(), "Priority should not be null");
+            assertNotNull(incident.getCreatedAt(), "CreatedAt should not be null");
+            assertNotNull(incident.getUpdatedAt(), "UpdatedAt should not be null");
 
-        incident.setDescription("Updated Description");
-        assertEquals("Updated Description", incident.getDescription());
+            // 检查 createdAt 和 updatedAt 是否在合理的时间范围内
+            LocalDateTime createdAt = incident.getCreatedAt();
+            LocalDateTime updatedAt = incident.getUpdatedAt();
+            ZonedDateTime createdZoned = createdAt.atZone(ZoneId.systemDefault());
+            ZonedDateTime updatedZoned = updatedAt.atZone(ZoneId.systemDefault());
 
-        incident.setStatus(Incident.Status.IN_PROGRESS);
-        assertEquals(Incident.Status.IN_PROGRESS, incident.getStatus());
+            long diffMillis = Math.abs(createdZoned.toInstant().toEpochMilli() - updatedZoned.toInstant().toEpochMilli());
 
-        incident.setPriority(Incident.Priority.MEDIUM);
-        assertEquals(Incident.Priority.MEDIUM, incident.getPriority());
+
+            assertTrue(diffMillis <= 10, "CreatedAt and UpdatedAt should be within 10 milliseconds of each other upon creation");
+        }
+    }
+
+    @Test
+    void updateTimestamp_ShouldUpdateTimestamp() {
+        LocalDateTime initialTime = LocalDateTime.now();
+        Incident incident = incidents.get(0);
+        incident.updateTimestamp();
+        LocalDateTime updatedTime = incident.getUpdatedAt();
+        assertTrue(updatedTime.isAfter(initialTime), "UpdatedAt should be after the initial time");
+    }
+
+    @Test
+    void toString_ShouldReturnCorrectStringRepresentation() {
+        for (Incident incident : incidents) {
+            String expectedString = "Incident{" +
+                    "id=" + incident.getId() +
+                    ", title='" + incident.getTitle() + '\'' +
+                    ", description='" + incident.getDescription() + '\'' +
+                    ", status=" + incident.getStatus() +
+                    ", priority=" + incident.getPriority() +
+                    ", createdAt=" + incident.getCreatedAt() +
+                    ", updatedAt=" + incident.getUpdatedAt() +
+                    '}';
+            assertEquals(expectedString, incident.toString(), "toString method should return correct string representation");
+        }
     }
 }

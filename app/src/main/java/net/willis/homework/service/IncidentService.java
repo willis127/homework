@@ -18,22 +18,22 @@ public class IncidentService {
         this.repository = repository;
     }
 
-    // 清空所有事件
+    // Clear all Incidents
     public void clearIncidents() {
         repository.clear();
     }
     // Create a new Incident
-    public Incident createIncident(Incident incident) {
-        return repository.save(incident);
+    public Incident createIncident(String title, String description, Incident.Status status, Incident.Priority priority) {
+        return repository.save(title, description, status, priority);
     }
 
-    // Retrieve an Incident by ID
+    // Get an Incident by ID
     @Cacheable(value = "incidents", key = "#id")
     public Incident getIncidentById(Long id) {
         return repository.findById(id);
     }
 
-    // Retrieve all Incidents
+    // Get all Incidents
     public List<Incident> getAllIncidents() {
         return repository.findAll();
     }

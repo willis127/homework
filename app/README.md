@@ -33,3 +33,6 @@
 ```bash
       ab -n 1000 -c 100 http://localhost:8080/api/incidents
 ```
+
+## Maven settings.xml
+settings.xml contains mirrors in China to accelerate downloading
