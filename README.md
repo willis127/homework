@@ -1,15 +1,17 @@
-# fullstack demo project from candidate
-This is a fullstack demo project from candidate Willis Wu 
-## How to run the project
-0. make sure you have docker installed
-1. clone the repo to your local environment
+# Fullstack demo from candidate
+A fullstack demo from candidate Willis Wu 
+## How to run
+0. Docker installed
+1. Clone the repo to your local environment
 2. cd into the dictory
 3. run command: 
 ```bash
 docker-compose up --build
 ```
-4. check whether it's running by command: docker ps
-5. if you finish checking this project, stop by running command: docker-compose down
-6. the front page runs on port 3000, the backend runs on 8080
-
-## docker-compose.yml
+or
+```bash
+docker compose up --build
+```
+4. click <http://localhost:3000>
+5. if you finish checking this, stop by command: docker-compose down
+front page runs at port 3000, backend runs at 8080
