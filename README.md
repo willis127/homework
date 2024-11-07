@@ -23,3 +23,5 @@ or
 docker compose down
 ```
 front page runs at port 3000, backend runs at 8080, redis at 6379
+7. if it builds for too long, you can also visit the service I deploy on Tencent Cloud directly:
+<http://175.178.109.20:3000/>
